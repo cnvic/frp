@@ -95,6 +95,8 @@ github.com/cncf/xds/go v0.0.0-20210805033703-aa0b78936158/go.mod h1:eXthEFrGJvWH
 github.com/cncf/xds/go v0.0.0-20210922020428-25de7278fc84/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/cncf/xds/go v0.0.0-20211001041855-01bcc9b48dfe/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/cncf/xds/go v0.0.0-20211011173535-cb28da3451f1/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
+github.com/cnvic/doh-go v0.3.0 h1:GxlgC8p+w4Gfa/pUm4LWxiFxJ+G9fb1lKxUr4k8SpXA=
+github.com/cnvic/doh-go v0.3.0/go.mod h1:lxY/8K6UFFh1iFh8X8VysGOpoH3Kg0vV/J1p53L16yo=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-oidc/v3 v3.4.0 h1:xz7elHb/LDwm/ERpwHd+5nb7wFHL32rsr6bBOgaeu6g=
@@ -306,8 +308,6 @@ github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
 github.com/leodido/go-urn v1.2.1 h1:BqpAaACuzVSgi/VLzGZIobT2z4v53pjosyNd9Yv6n/w=
 github.com/leodido/go-urn v1.2.1/go.mod h1:zt4jvISO2HfUBqxjfIshjdMTYS56ZS/qv49ictyFfxY=
-github.com/likexian/doh-go v0.6.4 h1:UnTrIVAOwkBvKU6qOt2W3C5yC9/YO02UVPPcN26iZDY=
-github.com/likexian/doh-go v0.6.4/go.mod h1:9jHpL/WPYmOM8+93RwXDf5TpZZwQjHrmIglXmjHpLlA=
 github.com/likexian/gokit v0.21.11 h1:tBA2U/5e9Pq24dsFuDZ2ykjsaSznjNnovOOK3ljU1ww=
 github.com/likexian/gokit v0.21.11/go.mod h1:0WlTw7IPdiMtrwu0t5zrLM7XXik27Ey6MhUJHio2fVo=
 github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=

@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5
+	github.com/cnvic/doh-go v0.3.0
 	github.com/coreos/go-oidc/v3 v3.4.0
 	github.com/fatedier/beego v0.0.0-20171024143340-6c6a4f5bd5eb
 	github.com/fatedier/golib v0.1.1-0.20230320133937-a7edcc8c793d
@@ -13,7 +14,6 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/hashicorp/yamux v0.1.1
-	github.com/likexian/doh-go v0.6.4
 	github.com/onsi/ginkgo/v2 v2.8.3
 	github.com/onsi/gomega v1.27.0
 	github.com/pion/stun v0.4.0

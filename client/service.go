@@ -21,6 +21,7 @@ import (
 	"io"
 	"math/rand"
 	"net"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -33,6 +34,8 @@ import (
 	fmux "github.com/hashicorp/yamux"
 	quic "github.com/quic-go/quic-go"
 
+	"github.com/cnvic/doh-go"
+	"github.com/cnvic/doh-go/dns"
 	"github.com/fatedier/frp/assets"
 	"github.com/fatedier/frp/pkg/auth"
 	"github.com/fatedier/frp/pkg/config"
@@ -43,8 +46,6 @@ import (
 	"github.com/fatedier/frp/pkg/util/util"
 	"github.com/fatedier/frp/pkg/util/version"
 	"github.com/fatedier/frp/pkg/util/xlog"
-	"github.com/likexian/doh-go"
-	"github.com/likexian/doh-go/dns"
 )
 
 func init() {
@@ -64,13 +65,21 @@ func resolveDomainWithDoH(domain string) (string, error) {
 
 	rsp, err := c.Query(resolver, d, dns.TypeA)
 	if err == nil {
-		answer := rsp.Answer[0].Data
-		return answer, nil
+		for _, a := range rsp.Answer {
+			if a.Type == 1 {
+				return a.Data, nil
+			}
+		}
+		return rsp.Answer[len(rsp.Answer)-1].Data, nil
 	} else {
 		rsp2, err2 := c.Query(resolver, d, dns.TypeA)
 		if err2 == nil {
-			answer2 := rsp2.Answer[0].Data
-			return answer2, nil
+			for _, a := range rsp2.Answer {
+				if a.Type == 1 {
+					return a.Data, nil
+				}
+			}
+			return rsp2.Answer[len(rsp2.Answer)-1].Data, nil
 		} else {
 			return "", err2
 		}
@@ -134,6 +143,7 @@ func (svr *Service) GetController() *Control {
 
 func (svr *Service) Run() error {
 	xl := xlog.FromContextSafe(svr.ctx)
+	retryCounts := 1
 
 	// set custom DNSServer
 	if svr.cfg.DNSServer != "" {
@@ -169,6 +179,12 @@ func (svr *Service) Run() error {
 				return err
 			}
 			util.RandomSleep(10*time.Second, 0.9, 1.1)
+
+			retryCounts++
+			if retryCounts > 30 {
+				xl.Warn("Reached max %v retries.", retryCounts)
+				return err
+			}
 		} else {
 			// login success
 			ctl := NewControl(svr.ctx, svr.runID, conn, cm, svr.cfg, svr.pxyCfgs, svr.visitorCfgs, svr.authSetter)
@@ -208,6 +224,7 @@ func (svr *Service) keepControllerWorking() {
 	cutoffTime := time.Now().Add(time.Minute)
 	reconnectDelay := time.Second
 	reconnectCounts := 1
+	retryCounts := 1
 
 	for {
 		<-svr.ctl.ClosedDoneCh()
@@ -247,6 +264,12 @@ func (svr *Service) keepControllerWorking() {
 				delayTime *= 2
 				if delayTime > maxDelayTime {
 					delayTime = maxDelayTime
+				}
+
+				retryCounts++
+				if retryCounts > 30 {
+					xl.Warn("%v retries have been made and the program will exit.", retryCounts)
+					os.Exit(1)
 				}
 				continue
 			}
