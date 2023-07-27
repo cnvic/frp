@@ -41,7 +41,7 @@ func init() {
 
 var udpCmd = &cobra.Command{
 	Use:   "udp",
-	Short: "Run frpc with a single udp proxy",
+	Short: "Run netwatch with a single udp proxy",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		clientCfg, err := parseClientCommonCfgFromCmd()
 		if err != nil {

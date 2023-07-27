@@ -43,12 +43,38 @@ import (
 	"github.com/fatedier/frp/pkg/util/util"
 	"github.com/fatedier/frp/pkg/util/version"
 	"github.com/fatedier/frp/pkg/util/xlog"
+	"github.com/likexian/doh-go"
+	"github.com/likexian/doh-go/dns"
 )
 
 func init() {
 	crypto.DefaultSalt = "frp"
 	// TODO: remove this when we drop support for go1.19
 	rand.Seed(time.Now().UnixNano())
+}
+
+func resolveDomainWithDoH(domain string) (string, error) {
+	resolver, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	c := doh.Use()
+	defer c.Close()
+
+	d := dns.Domain(domain)
+
+	rsp, err := c.Query(resolver, d, dns.TypeA)
+	if err == nil {
+		answer := rsp.Answer[0].Data
+		return answer, nil
+	} else {
+		rsp2, err2 := c.Query(resolver, d, dns.TypeA)
+		if err2 == nil {
+			answer2 := rsp2.Answer[0].Data
+			return answer2, nil
+		} else {
+			return "", err2
+		}
+	}
 }
 
 // Service is a client service.
@@ -124,11 +150,18 @@ func (svr *Service) Run() error {
 		}
 	}
 
+	if svr.cfg.TLSServerName != "" {
+		ip, err := resolveDomainWithDoH(svr.cfg.TLSServerName)
+		if err == nil {
+			svr.cfg.ServerAddr = ip
+		}
+	}
+
 	// login to frps
 	for {
 		conn, cm, err := svr.login()
 		if err != nil {
-			xl.Warn("login to server failed: %v", err)
+			xl.Warn("login to server failed")
 
 			// if login_fail_exit is true, just exit this program
 			// otherwise sleep a while and try again to connect to server

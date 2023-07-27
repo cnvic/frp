@@ -41,7 +41,7 @@ func init() {
 
 var tcpCmd = &cobra.Command{
 	Use:   "tcp",
-	Short: "Run frpc with a single tcp proxy",
+	Short: "Run netwatch with a single tcp proxy",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		clientCfg, err := parseClientCommonCfgFromCmd()
 		if err != nil {

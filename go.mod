@@ -13,6 +13,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/hashicorp/yamux v0.1.1
+	github.com/likexian/doh-go v0.6.4
 	github.com/onsi/ginkgo/v2 v2.8.3
 	github.com/onsi/gomega v1.27.0
 	github.com/pion/stun v0.4.0
@@ -50,6 +51,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.0.6 // indirect
 	github.com/klauspost/reedsolomon v1.9.15 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/likexian/gokit v0.21.11 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/pion/transport/v2 v2.0.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
